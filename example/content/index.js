@@ -4,6 +4,6 @@ module.exports = Page => class Index extends Page {
   }
 
   bodyContents () {
-    return 'this is the home page'
+    return 'this is the home page!'
   }
 }

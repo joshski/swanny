@@ -1,4 +1,7 @@
 const http = require('http')
+const WebSocket = require('ws')
+const chokidar = require('chokidar')
+
 const App = require('./app')
 
 const port = process.env.PORT || 8887
@@ -11,15 +14,32 @@ const server = http.createServer((req, res) => {
   res.end(response.body)
 })
 
-const WebSocket = require('ws')
 const wss = new WebSocket.Server({ server })
 
-wss.on('connection', function connection (ws, req) {
-  console.log("connection")
+chokidar.watch(process.cwd(), {}).on('all', (event, path) => {
+  wss.clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN) {
+      const url = urls[client.socketId]
+      const path = require('url').parse(url).path
+      client.send(JSON.stringify({
+        command: 'reload',
+        url: url,
+        path: path
+      }))
+    }
+  })
+})
 
+let socketId = 0
+const urls = {}
+wss.on('connection', function connection (ws, req) {
+  ws.socketId = socketId++
   ws.on('message', function incoming (message) {
-    console.log('received: %s', message)
-  });
+    const parsed = JSON.parse(message)
+    if (parsed.url) {
+      urls[ws.socketId] = parsed.url
+    }
+  })
 
   const hello = JSON.stringify({
     command: 'hello',
