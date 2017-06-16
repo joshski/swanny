@@ -2,30 +2,38 @@
 
 A static site generator that's easy to understand.
 
-# Generating a site
+## Generating a site
 
 swanny transforms a directory of files into a directory of static files.
 
 It uses routes, extensions and layouts to transform files. For example:
 
-  GET http://example.com/some/page
+```
+GET http://example.com/some/page
+```
 
-  ...is mapped to:
+...is mapped to:
 
-  ./routes/some/page.md
+```
+routes/some/page.md
+```
 
-  ...which is rendered with:
+...which is rendered with:
 
-  ./extensions/md.js
+```
+extensions/md.js
+```
 
-  ...which delegates layout to:
+..which delegates its layout to:
 
-  ./layouts/default.js
+```
+layouts/default.js
+```
 
 At development time swanny automatically applies changes to your web pages using
 [livereload.js](https://github.com/livereload/livereload-js).
 
-## Installing it
+## Installing swanny
 
 In your project directory:
 
@@ -54,23 +62,23 @@ directory. The extension will be removed when the static file is generated.
 
 An extension transforms the file at any path under `/routes` into either:
 
-    * Some content and a nominated layout name:
+* Some content and a nominated layout name:
 
-        ```js
-        module.exports = path => ({
-          layout: 'admin',
-          content: 'Welcome to the dashboard'
-        })
-        ```
+```js
+module.exports = path => ({
+  layout: 'admin',
+  content: 'Welcome to the dashboard'
+})
+ ```
 
-    * or a response object with a content type and body:
+* or a response object with a content type and body:
 
-        ```js
-        module.exports = path => ({
-          contentType: 'text/css',
-          body: '* { color: red }'
-        })
-        ```
+```js
+module.exports = path => ({
+  contentType: 'text/css',
+  body: '* { color: red }'
+})
+```
 
 ## Defining layouts
 
