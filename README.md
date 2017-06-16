@@ -6,7 +6,9 @@ A static site generator that's easy to understand.
 
 swanny transforms a directory of files into a directory of static files.
 
-It uses routes, extensions and layouts to transform files. For example:
+It takes input files (known as [routes](#routes)), runs the content through node modules corresponding to the file [extensions](#extensions), and optionally passes the result through [layouts](#layouts) for the final output.
+
+For example:
 
 ```
 GET http://example.com/some/page
