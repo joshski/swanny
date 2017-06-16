@@ -56,7 +56,7 @@ Usually you should swanny it to your project:
     npm init
     npm i swanny --save
 
-Then register swanny as the start script in your `/package.json` file:
+Then register swanny as the start script in your `package.json` file:
 
 ```json
   "scripts": {
@@ -74,16 +74,17 @@ directory with your static files
 
 ## Content
 
-Content files live in your project's `/content` directory. The extension of any
+Content files live in your project's `content` directory. The extension of any
 file in this directory should correspond to the name of a node module in your
-`./extensions` directory. This extension will be removed when the static file is
+`extensions` directory. This extension will be removed when the static file is
 generated.
 
 ## Extensions
 
-An extension transforms the file at any path under `/contents` into either:
+An extension module transforms a file with that extension into an object,
+which can be either:
 
-* Some content and a nominated layout name:
+* Some content and a nominated layout for post-processing:
 
 ```js
 module.exports = path => ({
