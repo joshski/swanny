@@ -2,11 +2,14 @@
 
 A static site generator that's easy to understand.
 
-## Generating a site
+## Developing a site
 
 swanny transforms a directory of files into a directory of static files.
 
-It takes input files (known as [routes](#routes)), runs the content through node modules corresponding to the file [extensions](#extensions), and optionally passes the result through [layouts](#layouts) to generate the final output.
+It transforms [content](#content) by running each file through one of your [extensions](#extensions) (depending on the extension in the filename) then optionally passes the result through one of your [layouts](#layouts) to generate the final static output.
+
+At development time swanny automatically applies changes to your web pages using
+[livereload.js](https://github.com/livereload/livereload-js).
 
 For example:
 
@@ -14,10 +17,10 @@ For example:
 GET http://example.com/some/page
 ```
 
-...is mapped to:
+...corresponds to:
 
 ```
-routes/some/page.md
+content/some/page.md
 ```
 
 ...which is rendered with:
@@ -26,43 +29,61 @@ routes/some/page.md
 extensions/md.js
 ```
 
-..which delegates its layout to:
+..finally generating within a layout defined at:
 
 ```
 layouts/default.js
 ```
 
-At development time swanny automatically applies changes to your web pages using
-[livereload.js](https://github.com/livereload/livereload-js).
+## Running the swanny server
 
-## Installing swanny
+You could install swanny globally:
 
-In your project directory:
+    npm i swanny -g
+
+...and then run the server:
+
+    swanny server
+
+# Publish the static files
+
+When you are ready to publish your site, create a `public` directory with:
+
+    swanny publish
+
+## Adding swanny to your project
+
+Usually you should swanny it to your project:
 
     npm init
     npm i swanny --save
 
-Register swanny as the start script in your `/package.json` file:
+Then register swanny as the start script in your `/package.json` file:
 
-```
-    "scripts": {
-      "start": "swanny"
-    }
+```json
+  "scripts": {
+    "start": "swanny server",
+    "publish": "swanny publish"
+  }
 ```
 
-Now `npm start` to start the swanny generator. You can leave it running, it'll
+Now `npm start` will start the swanny server. You can leave it running, it'll
 transform your content and refresh the static site when it notices changes to
-your routes.
+your contents.
 
-## Routes
+When you are ready to deploy then `npm run publish` will create a `public`
+directory with your static files
 
-A route is any file under your `/routes` directory. The extension of this
-file should correspond to the name of a module under your `./extensions`
-directory. The extension will be removed when the static file is generated.
+## Content
+
+Content files live in your project's `/content` directory. The extension of any
+file in this directory should correspond to the name of a node module in your
+`./extensions` directory. This extension will be removed when the static file is
+generated.
 
 ## Extensions
 
-An extension transforms the file at any path under `/routes` into either:
+An extension transforms the file at any path under `/contents` into either:
 
 * Some content and a nominated layout name:
 

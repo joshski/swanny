@@ -1,4 +1,4 @@
-const freshRequire = require('../../freshRequire')
+const freshRequire = require('../../lib/freshRequire')
 
 module.exports = path => {
   return {
