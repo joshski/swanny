@@ -6,7 +6,7 @@ module.exports = path => {
   return {
     layout: 'default',
     content: class MarkdownPage {
-      bodyContents() {
+      body () {
         return hyperdom.rawHtml('.md', marked(fs.readFileSync(path, 'utf-8')))
       }
     }

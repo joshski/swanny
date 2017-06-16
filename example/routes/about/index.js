@@ -3,7 +3,11 @@ module.exports = class Introduction {
     return 'About us'
   }
 
-  bodyContents () {
-    return 'This is the about us page'
+  body (h) {
+    return [
+      'This is the ',
+      h('strong', 'about us'),
+      ' page.'
+    ]
   }
 }

@@ -1,1 +1,3 @@
-# Welcome to my new website
+# Welcome to our new website
+
+You should [get to know us](about)

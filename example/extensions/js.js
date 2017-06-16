@@ -1,6 +1,8 @@
+const freshRequire = require('../../freshRequire')
+
 module.exports = path => {
   return {
     layout: 'default',
-    content: require(path)
+    content: freshRequire(path)
   }
 }
