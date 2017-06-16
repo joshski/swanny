@@ -1,17 +1,19 @@
 {
   "name": "swanny",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "app.js",
   "directories": {
     "example": "example"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+  "bin": {
+    "swanny": "./bin/swanny.js"
   },
-  "author": "",
-  "license": "ISC",
+  "scripts": {
+    "start": "node generator.js"
+  },
+  "author": "joshski <joshuachisholm@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "caller": "1.0.1",
     "chokidar": "1.6.1",
