@@ -52,13 +52,13 @@ Now `npm start` to start the swanny generator. You can leave it running, it'll
 transform your content and refresh the static site when it notices changes to
 your routes.
 
-## Defining routes
+## Routes
 
 A route is any file under your `/routes` directory. The extension of this
 file should correspond to the name of a module under your `./extensions`
 directory. The extension will be removed when the static file is generated.
 
-## Defining extensions
+## Extensions
 
 An extension transforms the file at any path under `/routes` into either:
 
@@ -80,7 +80,7 @@ module.exports = path => ({
 })
 ```
 
-## Defining layouts
+## Layouts
 
 A layout takes the result of calling the extension on the file, and transforms
 that into a response object:
