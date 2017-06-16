@@ -1,42 +1,18 @@
 const freshRequire = require('./freshRequire')
 const join = require('path').join
-const toHtml = require('hyperdom/toHtml')
+
 const fs = require('fs')
+
 const liveReload = fs.readFileSync(join(__dirname, 'node_modules/livereload-js/dist/livereload.js'))
+const routesPath = join(process.cwd(), 'routes')
+const extensionsPath = join(process.cwd(), 'extensions')
+const layoutsPath = join(process.cwd(), 'layouts')
 
 module.exports = class App {
   respondTo({ path }) {
-    if (path == '/livereload.js') {
-      return {
-        statusCode: 200,
-        body: liveReload,
-        contentType: 'application/javascript'
-      }
-    }
-    const routePath = join(process.cwd(), 'routes', path)
+    if (path == '/livereload.js') { return { body: liveReload, contentType: 'application/javascript' } }
     try {
-      const Page = freshRequire(join(process.cwd(), 'page'))
-      const routeModule = freshRequire(routePath)
-      if (typeof routeModule.statusCode == 'number')
-        return routeModule
-      if (typeof routeModule == 'string')
-        return {
-          contentType: 'text/plain',
-          body: routeModule
-        }
-      if (routeModule.length == 0)
-        return new routeModule().render()
-      const ViewClass = routeModule(Page)
-      const view = new ViewClass()
-      const renderedView = view.render()
-      if (typeof renderedView.statusCode == 'number')
-        return renderedView
-      else
-        return {
-          statusCode: 200,
-          body: toHtml(renderedView).replace('</body>', '<script src="/livereload.js"></s' + 'cript></body>'),
-          contentType: 'text/html'
-        }
+      return this.respondToRoute(path)
     } catch (e) {
       return {
         statusCode: e.code == 'MODULE_NOT_FOUND' ? 404 : 500,
@@ -44,5 +20,33 @@ module.exports = class App {
         contentType: 'text/plain'
       }
     }
+  }
+
+  respondToRoute(path) {
+    const extensions = fs.readdirSync(extensionsPath)
+      .map(ext => ext.replace(/\.js$/, '')).sort((a, b) => a.length - b.length)
+    const routePath = this.inferRoutePath(path, extensions)
+    const matchingExtensions = extensions.filter(ext => new RegExp('\.' + ext + '$').test(routePath))
+    if (matchingExtensions.length != 1) throw new Error('Expected 1 matching extension')
+    const extensionModule = freshRequire(join(extensionsPath, matchingExtensions[0]))
+    const moduleResult = extensionModule(routePath)
+    const rendering = moduleResult.layout ?
+      freshRequire(join(layoutsPath, moduleResult.layout))(moduleResult.content) : moduleResult
+    if (rendering.contentType == 'text/html')
+      rendering.body = rendering.body.replace('</body>', '<script src="/livereload.js"></s' + 'cript></body>')
+    return rendering
+  }
+
+  inferRoutePath(path, extensions) {
+    const candidates = extensions
+      .map(ext => path + '.' + ext)
+      .concat(extensions.map(ext => path + '/index.' + ext))
+      .map(p => join(routesPath, p.slice(1)))
+      .sort((a, b) => a.length - b.length)
+    const matches = candidates.filter(candidate => fs.existsSync(candidate))
+    if (matches.length != 1)
+      throw new Error('Expected 1 matching route, found ' + matches.length + ': ' + matches.join(', '))
+
+    return matches[0]
   }
 }

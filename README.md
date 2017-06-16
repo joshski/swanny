@@ -4,15 +4,25 @@ A static site generator that's easy to understand.
 
 # Generating a site
 
-swanny transforms a directory of JavaScript modules into a directory of static
-files, by invoking a function exported by each module and saving the result:
+swanny transforms a directory of files into a directory of static files.
 
-    Public URL                      Route                       Generates
-    http://foo.com/           =>    /routes/index.html.js   =>  /public/index.html
-    http://foo.com/some.js    =>    /routes/some.js.js      =>  /public/some.js
-    http://foo.com/ok/then    =>    /routes/ok/then.js      =>  /public/ok/then
+It uses routes, extensions and layouts to transform files. For example:
 
-At development time swanny automatically reloads changes to your web pages using
+  GET http://example.com/some/page
+
+  ...is mapped to:
+
+  ./routes/some/page.md
+
+  ...which is rendered with:
+
+  ./extensions/md.js
+
+  ...which delegates layout to:
+
+  ./layouts/default.js
+
+At development time swanny automatically applies changes to your web pages using
 [livereload.js](https://github.com/livereload/livereload-js).
 
 ## Installing it
@@ -36,56 +46,42 @@ your routes.
 
 ## Defining routes
 
-A route is any JavaScript files under your `/routes/` directory. Each module
-should export any one of the following:
+A route is any file under your `/routes` directory. The extension of this
+file should correspond to the name of a module under your `./extensions`
+directory. The extension will be removed when the static file is generated.
 
-  * an object describing the response:
+## Defining extensions
 
-      ```js
-      module.exports = {
-        contentType: 'text/css',
-        body: '* { color: green }'
-      }
-      ```
+An extension transforms the file at any path under `/routes` into either:
 
-  * an primitive type like a string or a number (treated as `text/plain`):
+    * Some content and a nominated layout name:
 
-      ```js
-      module.exports = 42
-      ```
+        ```js
+        module.exports = path => ({
+          layout: 'admin',
+          content: 'Welcome to the dashboard'
+        })
+        ```
 
-  * a class with a render method returning a response object:
+    * or a response object with a content type and body:
 
-      ```js
-      module.exports = class SomeCssFile {
-        render () {
-          return {
-            statusCode: 200,
-            contentType: 'text/css',
-            body: '* { color: green }'
-          }
-        }
-      }
-      ```
+        ```js
+        module.exports = path => ({
+          contentType: 'text/css',
+          body: '* { color: red }'
+        })
+        ```
 
-  * a class with a render method returning a virtual DOM:
+## Defining layouts
 
-      ```js
-      const h = require('hyperdom/html')
+A layout takes the result of calling the extension on the file, and transforms
+that into a response object:
 
-      module.exports = class SomeHtmlFile {
-        render () {
-          return h('html', h('body', 'hello!'))
-        }
-      }
-      ```
-
-  * a function that returns a _subclass_ with a render method:
-
-      ```js
-      module.exports = Layout => class SomeHtmlFile extends Layout {
-        render () {
-          return h('html', h('body', 'hello!'))
-        }
-      }
-      ```
+```js
+module.exports = content => {
+  return {
+    contentType: 'text/html',
+    body: '<html><body>' + content + '</body></html>'
+  }
+}
+```

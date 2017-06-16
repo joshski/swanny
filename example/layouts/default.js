@@ -1,6 +1,16 @@
 const h = require('hyperdom').html
+const toHtml = require('hyperdom/toHtml')
 
-module.exports = class Page {
+module.exports = content => {
+  Object.setPrototypeOf(content.prototype, Page.prototype)
+  Object.setPrototypeOf(content, Page)
+  return {
+    contentType: 'text/html',
+    body: toHtml(new content().render())
+  }
+}
+
+class Page {
   render () {
     return h(
       'html',
