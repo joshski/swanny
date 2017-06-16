@@ -45,9 +45,7 @@ You could install swanny globally:
 
     swanny server
 
-# Publish the static files
-
-When you are ready to publish your site, create a `public` directory with:
+...or publish the static files:
 
     swanny publish
 
