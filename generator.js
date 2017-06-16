@@ -10,7 +10,7 @@ const app = new App()
 
 const server = http.createServer((req, res) => {
   const response = app.respondTo({ path: req.url })
-  res.writeHead(response.statusCode, { 'Content-Type': response.contentType })
+  res.writeHead(response.statusCode || 200, { 'Content-Type': response.contentType })
   res.end(response.body)
 })
 
@@ -43,8 +43,10 @@ wss.on('connection', function connection (ws, req) {
 
   const hello = JSON.stringify({
     command: 'hello',
-    protocols: ['http://livereload.com/protocols/official-6', 'http://livereload.com/protocols/official-7'],
-    serverName: 'beano'
+    protocols: [
+      'http://livereload.com/protocols/official-6',
+      'http://livereload.com/protocols/official-7'],
+    serverName: 'swanny'
   })
 
   ws.send(hello)

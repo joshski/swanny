@@ -13,13 +13,20 @@ module.exports = class App {
         contentType: 'application/javascript'
       }
     }
-    const contentPath = join(process.cwd(), 'content', path)
+    const routePath = join(process.cwd(), 'routes', path)
     try {
       const Page = freshRequire(join(process.cwd(), 'page'))
-      const viewModule = freshRequire(contentPath)
-      if (typeof viewModule.statusCode == 'number')
-        return viewModule
-      const ViewClass = viewModule(Page)
+      const routeModule = freshRequire(routePath)
+      if (typeof routeModule.statusCode == 'number')
+        return routeModule
+      if (typeof routeModule == 'string')
+        return {
+          contentType: 'text/plain',
+          body: routeModule
+        }
+      if (routeModule.length == 0)
+        return new routeModule().render()
+      const ViewClass = routeModule(Page)
       const view = new ViewClass()
       const renderedView = view.render()
       if (typeof renderedView.statusCode == 'number')
