@@ -1,4 +1,4 @@
-module.exports = class Introduction {
+module.exports = class About {
   title () {
     return 'About us'
   }
@@ -7,7 +7,9 @@ module.exports = class Introduction {
     return [
       'This is the ',
       h('strong', 'about us'),
-      ' page.'
+      ' page, featuring a swan:',
+      h('br'),
+      h('img', { src: '/images/swan.jpg' })
     ]
   }
 }
