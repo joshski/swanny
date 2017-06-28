@@ -1,4 +1,3 @@
-const marked = require('marked')
 const fs = require('fs')
 
 module.exports = path => {
