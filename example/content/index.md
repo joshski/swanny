@@ -1,3 +1,8 @@
-# Welcome to our new website
+# welcome!
 
-You should [get to know us](about)
+At my website you'll find:
+
+* [links](/link)
+* [images](/images/swan.jpg)
+* [stylesheets](/css/main)
+* [async responses](/delay)

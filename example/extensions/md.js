@@ -4,9 +4,9 @@ const fs = require('fs')
 
 module.exports = path => {
   return {
-    layout: 'default',
+    layout: 'page',
     content: class MarkdownPage {
-      body () {
+      pageContent () {
         return hyperdom.rawHtml('.md', marked(fs.readFileSync(path, 'utf-8')))
       }
     }

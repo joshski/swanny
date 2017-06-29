@@ -32,7 +32,7 @@ class Page {
   }
 
   renderStylesheet (h) {
-    return h('link', { rel: 'stylesheet', href: '/style.css', type: 'text/css' })
+    return h('link', { rel: 'stylesheet', href: '/css/main', type: 'text/css' })
   }
 
   title () {
@@ -57,14 +57,22 @@ class Page {
   }
 
   body (h) {
-    return []
+    return h('.content', this.pageContent(h))
+  }
+
+  pageContent (h) {
+    return ['implement pageContent(h) {}']
   }
 
   header (h) {
-    return []
+    return [
+      h('h1', '[sitewide header]')
+    ]
   }
 
   footer (h) {
-    return []
+    return [
+      h('h1', '[sitewide footer]')
+    ]
   }
 }
