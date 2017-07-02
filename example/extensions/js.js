@@ -1,8 +1,9 @@
 const freshRequire = require('../../lib/freshRequire')
 
 module.exports = path => {
+  const content = freshRequire(path)
   return {
-    layout: 'page',
-    content: freshRequire(path)
+    layout: content.layout || 'page',
+    content: content
   }
 }
