@@ -1,39 +1,63 @@
-# swanny
+# Swanny
 
 A static site generator that's easy to understand.
 
-## Developing a site
+Swanny transforms a directory of content files into a static website, and
+features a development-time server which automatically reloads your browser
+using [livereload.js](https://github.com/livereload/livereload-js).
 
-swanny transforms a directory of files into a directory of static files.
+## Transforming Content
 
-It transforms [content](#content) by running each file through one of your [extensions](#extensions) (depending on the extension in the filename) then optionally passes the result through one of your [layouts](#layouts) to generate the final static output.
-
-At development time swanny automatically applies changes to your web pages using
-[livereload.js](https://github.com/livereload/livereload-js).
-
-For example:
+Your repository should contain 3 directories:
 
 ```
-GET http://example.com/some/page
+/content
+/extensions
+/layouts
 ```
 
-...corresponds to:
+Every file under your `/content` directory generates a single file in your
+static site:
 
 ```
-content/some/page.md
+/content/hello.js    ...generates...    /public/hello
+/content/about.md    ...generates...    /public/about
 ```
 
-...which is rendered with:
+Each content file is sent to a node module under `/extensions` corresponding to
+its file extension:
 
 ```
-extensions/md.js
+/content/hello.js    ...is sent to...    /extensions/js.js
+/content/about.md    ...is sent to...    /extensions/md.js
 ```
 
-..finally generating within a layout defined at:
+Extensions can return either:
 
+* an object describing the static website response:
+
+```js
+{
+  contentType: 'text/plain',
+  body: 'Hello world!'
+}
 ```
-layouts/default.js
+
+* or an arbitrary content object to be rendered by a particular layout:
+
+```js
+{
+  layout: 'message',
+  content: { phrase: 'Hello world!' }
+}
 ```
+
+* or a promise to return either of the above
+
+Finally, if the result returned by the extension has a property called `layout`
+then its `content` is sent to a layout module to create the final result.
+
+See the [example](./example) directory for a complete site.
 
 ## Running the swanny server
 
