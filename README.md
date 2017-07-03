@@ -8,13 +8,16 @@ using [livereload.js](https://github.com/livereload/livereload-js).
 
 ## Transforming Content
 
-Your repository should contain 3 directories:
+Your repository should contain 3 directories which represent your sources:
 
 ```
 /content
 /extensions
 /layouts
 ```
+
+swanny uses these directories to generate a fourth `/public` directory with
+your static site.
 
 Every file under your `/content` directory generates a single file in your
 static site:
@@ -24,15 +27,15 @@ static site:
 /content/about.md    ...generates...    /public/about
 ```
 
-Each content file is sent to a node module under `/extensions` corresponding to
-its file extension:
+The path to each content file is sent to a node module under `/extensions`
+corresponding to its file extension:
 
 ```
 /content/hello.js    ...is sent to...    /extensions/js.js
 /content/about.md    ...is sent to...    /extensions/md.js
 ```
 
-Extensions can return either:
+Each extension returns either:
 
 * an object describing the static website response:
 
@@ -54,12 +57,12 @@ Extensions can return either:
 
 * or a promise to return either of the above
 
-Finally, if the result returned by the extension has a property called `layout`
-then its `content` is sent to a layout module to create the final result.
+Finally, when the result returned by the extension has a property called
+`layout` then its `content` is sent to a node module to create the final result.
 
 See the [example](./example) directory for a complete site.
 
-## Running the swanny server
+## Installation and usage
 
 You could install swanny globally:
 
@@ -73,14 +76,14 @@ You could install swanny globally:
 
     swanny publish
 
-## Adding swanny to your project
+## Adding it to your project
 
-Usually you should swanny it to your project:
+Usually you should add swanny to your project's dependencies:
 
     npm init
     npm i swanny --save
 
-Then register swanny as the start script in your `package.json` file:
+Then register scripts in your `package.json` file:
 
 ```json
   "scripts": {
@@ -89,7 +92,7 @@ Then register swanny as the start script in your `package.json` file:
   }
 ```
 
-Now `npm start` will start the swanny server. You can leave it running, it'll
+...so `npm start` will start the swanny server. You can leave it running, it'll
 transform your content and refresh the static site when it notices changes to
 your contents.
 
